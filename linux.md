@@ -118,7 +118,7 @@ file命令会输出文件内容的简要描述,例如：
 
 <img src="C:\Users\22364\AppData\Roaming\Typora\typora-user-images\image-20231020144724344.png" alt="image-20231020144724344" style="zoom:50%;" />
 
-**在类UNIX系统中（如Linux），存在一 个普遍观念：万物皆文件（everything is a file ）**
+**在类UNIX系统中（如Linux），存在一个普遍观念：万物皆文件（everything is a file ）**
 
 #### 使用less命令查看文本文件
 
