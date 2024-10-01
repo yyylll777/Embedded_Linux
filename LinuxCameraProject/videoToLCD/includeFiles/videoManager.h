@@ -4,6 +4,8 @@
 #include <config.h>
 #include "pic_operation.h"
 
+#define NB_BUFFER 4
+
 struct VideoDevice;
 struct VideoOpr;
 
@@ -15,6 +17,10 @@ typedef struct VideoDevice{
 	int iPixelFormat;
 	int iWidth;
 	int iHeight;
+	int iVideoBufCount;
+	unsigned char *pucVideoBuf[NB_BUFFER];
+	int iVideoBufMaxLen;
+	int iVideoBufCurIndex;
 	
 	//函数
 	PT_VideoOpr ptOPr;

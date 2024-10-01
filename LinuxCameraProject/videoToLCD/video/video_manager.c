@@ -2,6 +2,7 @@
 #include <video_manager.h>
 #include <string.h>
 
+
 static PT_VideoOpr g_ptFontOprHead = NULL;
 
 int RegisterVideoOpr(PT_VideoOpr ptVideoOpr)
@@ -58,34 +59,10 @@ PT_VideoOpr GetVideoOpr(char *pcName)
 
 int VideoInit(void)
 {
-	int iError;
-	
-	
-	
+	int iError;	
 	iError = V4L2Init();
 	
 	return iError;
-	// iError = ASCIIInit();
-	// if (iError)
-	// {
-		// DBG_PRINTF("ASCIIInit error!\n");
-		// return -1;
-	// }
-
-	// iError = GBKInit();
-	// if (iError)
-	// {
-		// DBG_PRINTF("GBKInit error!\n");
-		// return -1;
-	// }
-	
-	// iError = FreeTypeInit();
-	// if (iError)
-	// {
-		// DBG_PRINTF("FreeTypeInit error!\n");
-		// return -1;
-	// }
-
 
 }
 
