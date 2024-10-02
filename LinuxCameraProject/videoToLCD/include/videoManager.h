@@ -3,6 +3,7 @@
 
 #include <config.h>
 #include "pic_operation.h"
+#include <linux/videodev2.h>
 
 #define NB_BUFFER 4
 
@@ -12,7 +13,7 @@ struct VideoOpr;
 typedef struct VideoDevice T_VideoDevice, *PT_VideoDevice;
 typedef struct VideoOpr T_VideoOpr, *PT_VideoOpr;
 
-typedef struct VideoDevice{
+struct VideoDevice{
 	int iFd;//文件句柄
 	int iPixelFormat;
 	int iWidth;
@@ -25,14 +26,14 @@ typedef struct VideoDevice{
 	//函数
 	PT_VideoOpr ptOPr;
 	
-}T_VideoDevice, *PT_VideoDevice;
+};
 
 typedef struct VideoBuf{
 	T_PixelDatas tPixelDatas;
 	int iPixelFormat;	
 }T_VideoBuf, *PT_VideoBuf;
 
-typedef struct VideoOpr{
+struct VideoOpr{
 	char *name; 
 	
 	int (*InitDevice) (char *strDeviceName, PT_VideoDevice ptVideoDevice);
@@ -41,10 +42,14 @@ typedef struct VideoOpr{
 	int (*PutFrame) (PT_VideoDevice ptVideoDevice, PT_VideoBuf ptVideoBuf);
 	int (*StartDevice) (PT_VideoDevice ptVideoDevice);
 	int (*StopDevice) (PT_VideoDevice ptVideoDevice);
+	struct VideoOpr *ptNext;
 	
-}T_VideoOpr, *PT_VideoOpr;
+};
 
-int V4L2Init(void);
+int VideoDeviceInit(char *strDevName, PT_VideoDevice ptVideoDevice);
+int V4l2Init(void);
+int RegisterVideoOpr(PT_VideoOpr ptVideoOpr);
+int VideoInit(void);
 
 #endif /* _VIDEO_MANAGER_H* /
 

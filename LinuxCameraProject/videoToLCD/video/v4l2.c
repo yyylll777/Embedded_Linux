@@ -5,6 +5,11 @@
 #include <fctnl.h>
 #include <sys/mman.h>
 #include <poll.h>
+#include <sys/ioctl.h>
+#include <string.h>
+#include <disp_manager.h>
+#include <unistd.h>
+
 
 /*
 1. open文件
@@ -24,10 +29,6 @@
 对于read, write:
 1. read
 2. 处理
-
-
-
-
 */
 
 static int g_aiSupportedFormats [] = { V4L2_PIX_FMT_YUYV, V4L2_PIX_FMT_MJPEG, V4L2_PIX_FMT_RGB565, V4L2_PIX_FMT_RGB24,
@@ -44,9 +45,11 @@ static int isSupportThisFormat(int iPixelFormat){
 	return 0;
 }
 
-static int V4L2GetFrameForReadWrite (PT_VideoDevice ptVideoDevice, PT_VideoBuf ptVideoBuf){}
+static int V4L2GetFrameForReadWrite (PT_VideoDevice ptVideoDevice, PT_VideoBuf ptVideoBuf);
 
-static int V4L2PutFrameForReadWrite (PT_VideoDevice ptVideoDevice, PT_VideoBuf ptVideoBuf){}	
+static int V4L2PutFrameForReadWrite (PT_VideoDevice ptVideoDevice, PT_VideoBuf ptVideoBuf);	
+
+static T_VideoOpr g_tV4l2VideoOpr;
 	
 //构造一个VideoOpr结构体
 static T_VideoOpr g_tV4L2VideoOpr = {
@@ -113,13 +116,6 @@ static int V4L2InitDevice (char *strDeviceName, PT_VideoDevice ptVideoDevice){
 			break;
 		}
 		tFmtDesc.index++;
-		// printf("{ pixelformat = '%c%c%c%c', description = '%s' }\n",
-				// tFmtDesc.pixelformat & 0xFF, (tFmtDesc.pixelformat >> 8) & 0xFF,
-				// (tFmtDesc.pixelformat >> 16) & 0xFF, (tFmtDesc.pixelformat >> 24) & 0xFF,
-				// tFmtDesc.description);
-		// iError = enum_frame_sizes(iFd, tFmtDesc.pixelformat);
-		// if (iError != 0)
-			// printf("  Unable to enumerate frame sizes.\n");
 	}
 	
 	if(!ptVideoDevice->iPixelFormat){
@@ -252,8 +248,9 @@ static int V4L2GetFrameForStreaming (PT_VideoDevice ptVideoDevice, PT_VideoBuf p
 	ptVideoBuf->tPixelDatas.iWidth  = ptVideoDevice->iWidth;
 	ptVideoBuf->tPixelDatas.iHeight = ptVideoDevice->iHeight;
 	ptVideoBuf->tPixelDatas.iBpp    = (ptVideoDevice->iPixelFormat == V4L2_PIX_FMT_YUYV) ? 16 :\
-                                       (ptVideoDevice->iPixelFormat == V4L2_PIX_FMT_MJPEG) ? : 0 \	
-									   (ptVideoDevice->iPixelFormat == V4L2_PIX_FMT_RGB565) : 16;
+                                       (ptVideoDevice->iPixelFormat == V4L2_PIX_FMT_MJPEG) ? : 0 \
+									   (ptVideoDevice->iPixelFormat == V4L2_PIX_FMT_RGB565) ? 16 : \
+									   0;
 	ptVideoBuf->tPixelDatas.iLineBytes = ptVideoDevice->iWidth * ptVideoBuf->tPixelDatas.iBpp / 8;
 	ptVideoBuf->tPixelDatas.iTotalBytes = tV4L2Buf.bytesused;
 	ptVideoBuf->tPixelDatas.aucPixelDatas = ptVideoDevice->pucVideoBuf[tV4L2Buf.index];
@@ -289,8 +286,9 @@ static int V4L2GetFrameForReadWrite (PT_VideoDevice ptVideoDevice, PT_VideoBuf p
 	ptVideoBuf->tPixelDatas.iWidth  = ptVideoDevice->iWidth;
 	ptVideoBuf->tPixelDatas.iHeight = ptVideoDevice->iHeight;
 	ptVideoBuf->tPixelDatas.iBpp    = (ptVideoDevice->iPixelFormat == V4L2_PIX_FMT_YUYV) ? 16 :\
-                                       (ptVideoDevice->iPixelFormat == V4L2_PIX_FMT_MJPEG) ? : 0 \	
-									   (ptVideoDevice->iPixelFormat == V4L2_PIX_FMT_RGB565) : 16;
+                                       (ptVideoDevice->iPixelFormat == V4L2_PIX_FMT_MJPEG) ? 0 : \
+									   (ptVideoDevice->iPixelFormat == V4L2_PIX_FMT_RGB565) ? 16 : \
+									   0;
 	ptVideoBuf->tPixelDatas.iLineBytes = ptVideoDevice->iWidth * ptVideoBuf->tPixelDatas.iBpp / 8;
 	ptVideoBuf->tPixelDatas.iTotalBytes = iRet;
 	ptVideoBuf->tPixelDatas.aucPixelDatas = ptVideoDevice->pucVideoBuf[0];
@@ -298,9 +296,7 @@ static int V4L2GetFrameForReadWrite (PT_VideoDevice ptVideoDevice, PT_VideoBuf p
 	return 0;
 }
 
-static int V4L2PutFrameForReadWrite (PT_VideoDevice ptVideoDevice, PT_VideoBuf ptVideoBuf){
-	
-	
+static int V4L2PutFrameForReadWrite (PT_VideoDevice ptVideoDevice, PT_VideoBuf ptVideoBuf){	
 	return 0;
 }
 static int V4L2StartDevice (PT_VideoDevice ptVideoDevice){

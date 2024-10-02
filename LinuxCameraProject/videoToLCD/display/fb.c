@@ -11,7 +11,7 @@
 static int FBDeviceInit(void);
 static int FBShowPixel(int iX, int iY, unsigned int dwColor);
 static int FBCleanScreen(unsigned int dwBackColor);
-static int FBShowPage(PT_VideoMem ptVideoMem);
+static int FBShowPage(PT_PixelDatas ptPixelDatas);
 
 
 static int g_fd;
@@ -32,16 +32,6 @@ static T_DispOpr g_tFBOpr = {
 	.ShowPage    = FBShowPage,
 };
 
-/**********************************************************************
- * 函数名称： FBDeviceInit
- * 功能描述： "framebuffer显示设备"的初始化函数
- * 输入参数： 无
- * 输出参数： 无
- * 返 回 值： 0 - 成功, 其他值 - 失败
- * 修改日期        版本号     修改人	      修改内容
- * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
- ***********************************************************************/
 static int FBDeviceInit(void)
 {
 	int ret;
@@ -86,19 +76,6 @@ static int FBDeviceInit(void)
 	return 0;
 }
 
-
-/**********************************************************************
- * 函数名称： FBShowPixel
- * 功能描述： 设置FrameBuffer的指定象素为某颜色
- * 输入参数： iX - 象素的X坐标
- *            iX - 象素的Y坐标
- *            dwColor - 颜色值,格式为32Bpp,即0x00RRGGBB
- * 输出参数： 无
- * 返 回 值： 0 - 成功, 其他值 - 失败
- * 修改日期        版本号     修改人	      修改内容
- * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
- ***********************************************************************/
 static int FBShowPixel(int iX, int iY, unsigned int dwColor)
 {
 	unsigned char *pucFB;
@@ -153,16 +130,6 @@ static int FBShowPixel(int iX, int iY, unsigned int dwColor)
 	return 0;
 }
 
-/**********************************************************************
- * 函数名称： FBShowPage
- * 功能描述： 把PT_VideoMem中的颜色数据在FrameBuffer上显示出来
- * 输入参数： ptVideoMem - 内含整屏的象素数据
- * 输出参数： 无
- * 返 回 值： 0 - 成功, 其他值 - 失败
- * 修改日期        版本号     修改人	      修改内容
- * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
- ***********************************************************************/
 static int FBShowPage(PT_PixelDatas ptPixelDatas)
 {
     if (g_tFBOpr.pucDispMem != ptPixelDatas->aucPixelDatas)
@@ -172,16 +139,7 @@ static int FBShowPage(PT_PixelDatas ptPixelDatas)
 	return 0;
 }
 
-/**********************************************************************
- * 函数名称： FBCleanScreen
- * 功能描述： "framebuffer显示设备"的清屏函数
- * 输入参数： dwBackColor - 整个屏幕设置为该颜色
- * 输出参数： 无
- * 返 回 值： 0 - 成功, 其他值 - 失败
- * 修改日期        版本号     修改人	      修改内容
- * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
- ***********************************************************************/
+
 static int FBCleanScreen(unsigned int dwBackColor)
 {
 	unsigned char *pucFB;
@@ -241,16 +199,6 @@ static int FBCleanScreen(unsigned int dwBackColor)
 	return 0;
 }
 
-/**********************************************************************
- * 函数名称： FBInit
- * 功能描述： 注册"framebuffer显示设备"
- * 输入参数： 无
- * 输出参数： 无
- * 返 回 值： 0 - 成功, 其他值 - 失败
- * 修改日期        版本号     修改人	      修改内容
- * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
- ***********************************************************************/
 int FBInit(void)
 {
 	return RegisterDispOpr(&g_tFBOpr);

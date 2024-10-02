@@ -7,16 +7,7 @@ static PT_DispOpr g_ptDispOprHead;
 static PT_DispOpr g_ptDefaultDispOpr;
 static PT_VideoMem g_ptVideoMemHead;
 
-/**********************************************************************
- * 函数名称： RegisterDispOpr
- * 功能描述： 注册"显示模块", 把所能支持的显示设备的操作函数放入链表
- * 输入参数： ptDispOpr - 一个结构体,内含显示设备的操作函数
- * 输出参数： 无
- * 返 回 值： 0 - 成功, 其他值 - 失败
- * 修改日期        版本号     修改人	      修改内容
- * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
- ***********************************************************************/
+
 int RegisterDispOpr(PT_DispOpr ptDispOpr)
 {
 	PT_DispOpr ptTmp;
@@ -41,16 +32,7 @@ int RegisterDispOpr(PT_DispOpr ptDispOpr)
 }
 
 
-/**********************************************************************
- * 函数名称： ShowDispOpr
- * 功能描述： 显示本程序能支持的"显示模块"
- * 输入参数： 无
- * 输出参数： 无
- * 返 回 值： 无
- * 修改日期        版本号     修改人	      修改内容
- * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
- ***********************************************************************/
+
 void ShowDispOpr(void)
 {
 	int i = 0;
@@ -63,17 +45,7 @@ void ShowDispOpr(void)
 	}
 }
 
-/**********************************************************************
- * 函数名称： GetDispOpr
- * 功能描述： 根据名字取出指定的"显示模块"
- * 输入参数： pcName - 名字
- * 输出参数： 无
- * 返 回 值： NULL   - 失败,没有指定的模块, 
- *            非NULL - 显示模块的PT_DispOpr结构体指针
- * 修改日期        版本号     修改人	      修改内容
- * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
- ***********************************************************************/
+
 PT_DispOpr GetDispOpr(char *pcName)
 {
 	PT_DispOpr ptTmp = g_ptDispOprHead;
@@ -89,16 +61,7 @@ PT_DispOpr GetDispOpr(char *pcName)
 	return NULL;
 }
 
-/**********************************************************************
- * 函数名称： SelectAndInitDefaultDispDev
- * 功能描述： 根据名字取出指定的"显示模块", 调用它的初始化函数, 并且清屏
- * 输入参数： name - 名字
- * 输出参数： 无
- * 返 回 值： 无
- * 修改日期        版本号     修改人	      修改内容
- * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
- ***********************************************************************/
+
 void SelectAndInitDefaultDispDev(char *name)
 {
 	g_ptDefaultDispOpr = GetDispOpr(name);
@@ -110,36 +73,12 @@ void SelectAndInitDefaultDispDev(char *name)
 }
 
 
-
-/**********************************************************************
- * 函数名称： GetDefaultDispDev
- * 功能描述： 程序事先用SelectAndInitDefaultDispDev选择了显示模块,
- *            本函数返回该显示模块
- * 输入参数： 无
- * 输出参数： 无
- * 返 回 值： 显示模块的PT_DispOpr结构体指针
- * 修改日期        版本号     修改人	      修改内容
- * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
- ***********************************************************************/
 PT_DispOpr GetDefaultDispDev(void)
 {
 	return g_ptDefaultDispOpr;
 }
 
-/**********************************************************************
- * 函数名称： GetDispResolution
- * 功能描述： 获得所使用的显示设备的分辨率和BPP
- * 输入参数： 无
- * 输出参数： piXres - 存X分辨率
- *            piYres - 存X分辨率
- *            piBpp  - 存BPP
- * 返 回 值： 0  - 成功
- *            -1 - 失败(未使用SelectAndInitDefaultDispDev来选择显示模块)
- * 修改日期        版本号     修改人	      修改内容
- * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
- ***********************************************************************/
+
 int GetDispResolution(int *piXres, int *piYres, int *piBpp)
 {
 	if (g_ptDefaultDispOpr)
@@ -158,7 +97,7 @@ int GetDispResolution(int *piXres, int *piYres, int *piBpp)
 int GetVideoBufForDisplay(PT_VideoBuf ptFrameBuf)
 {
     ptFrameBuf->iPixelFormat = (g_ptDefaultDispOpr->iBpp == 16) ? V4L2_PIX_FMT_RGB565 : \
-                                   (g_ptDefaultDispOpr->iBpp == 32) ?  V4L2_PIX_FMT_RGB32 : \ 
+                                   (g_ptDefaultDispOpr->iBpp == 32) ?  V4L2_PIX_FMT_RGB32 : \
                                            0;
     ptFrameBuf->tPixelDatas.iWidth  = g_ptDefaultDispOpr->iXres;
     ptFrameBuf->tPixelDatas.iHeight = g_ptDefaultDispOpr->iYres;
@@ -175,19 +114,6 @@ void FlushPixelDatasToDev(PT_PixelDatas ptPixelDatas)
 }
 
 
-/**********************************************************************
- * 函数名称： AllocVideoMem
- * 功能描述： VideoMem: 为加快显示速度,我们事先在缓存中构造好显示的页面的数据,
- *            (这个缓存称为VideoMem)
- *            显示时再把VideoMem中的数据复制到设备的显存上
- * 输入参数： iNum
- * 输出参数： 无
- * 返 回 值： 0  - 成功
- *            -1 - 失败(未使用SelectAndInitDefaultDispDev来选择显示模块)
- * 修改日期        版本号     修改人	      修改内容
- * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
- ***********************************************************************/
 int AllocVideoMem(int iNum)
 {
 	int i;
@@ -276,20 +202,7 @@ int AllocVideoMem(int iNum)
 	return 0;
 }
 
-/**********************************************************************
- * 函数名称： GetVideoMem
- * 功能描述： 获得一块可操作的VideoMem(它用于存储要显示的数据), 
- *            用完后用PutVideoMem来释放
- * 输入参数： iID  - ID值,先尝试在众多VideoMem中找到ID值相同的
- *            bCur - 1表示当前程序马上要使用VideoMem,无法如何都要返回一个VideoMem
- *                   0表示这是为了改进性能而提前取得VideoMem,不是必需的
- * 输出参数： 无
- * 返 回 值： NULL   - 失败,没有可用的VideoMem
- *            非NULL - 成功,返回PT_VideoMem结构体
- * 修改日期        版本号     修改人	      修改内容
- * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
- ***********************************************************************/
+
 PT_VideoMem GetVideoMem(int iID, int bCur)
 {
 	PT_VideoMem ptTmp = g_ptVideoMemHead;
@@ -345,16 +258,6 @@ PT_VideoMem GetVideoMem(int iID, int bCur)
 	return NULL;
 }
 
-/**********************************************************************
- * 函数名称： PutVideoMem
- * 功能描述： 使用GetVideoMem获得的VideoMem, 用完时用PutVideoMem释放掉
- * 输入参数： ptVideoMem - 使用完毕的VideoMem
- * 输出参数： 无
- * 返 回 值： 无
- * 修改日期        版本号     修改人	      修改内容
- * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
- ***********************************************************************/
 void PutVideoMem(PT_VideoMem ptVideoMem)
 {
 	ptVideoMem->eVideoMemState = VMS_FREE;  /* 设置VideoMem状态为空闲 */
@@ -364,16 +267,6 @@ void PutVideoMem(PT_VideoMem ptVideoMem)
     }
 }
 
-/**********************************************************************
- * 函数名称： GetDevVideoMem
- * 功能描述： 获得显示设备的显存, 在该显存上操作就可以直接在LCD上显示出来
- * 输入参数： 无
- * 输出参数： 无
- * 返 回 值： 显存对应的VideoMem结构体指针
- * 修改日期        版本号     修改人	      修改内容
- * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
- ***********************************************************************/
 PT_VideoMem GetDevVideoMem(void)
 {
 	PT_VideoMem ptTmp = g_ptVideoMemHead;
@@ -390,17 +283,6 @@ PT_VideoMem GetDevVideoMem(void)
 }
 
 
-/**********************************************************************
- * 函数名称： ClearVideoMem
- * 功能描述： 把VideoMem中内存全部清为某种颜色
- * 输入参数： ptVideoMem - VideoMem结构体指针, 内含要操作的内存
- *            dwColor    - 设置为该颜色
- * 输出参数： 无
- * 返 回 值： 无
- * 修改日期        版本号     修改人	      修改内容
- * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
- ***********************************************************************/
 void ClearVideoMem(PT_VideoMem ptVideoMem, unsigned int dwColor)
 {
 	unsigned char *pucVM;
@@ -458,18 +340,6 @@ void ClearVideoMem(PT_VideoMem ptVideoMem, unsigned int dwColor)
 }
 
 
-/**********************************************************************
- * 函数名称： ClearVideoMemRegion
- * 功能描述： 把VideoMem中内存的指定区域全部清为某种颜色
- * 输入参数： ptVideoMem - VideoMem结构体指针, 内含要操作的内存
- *            ptLayout   - 矩形区域, 指定了左上角,右在角的坐标
- *            dwColor    - 设置为该颜色
- * 输出参数： 无
- * 返 回 值： 无
- * 修改日期        版本号     修改人	      修改内容
- * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
- ***********************************************************************/
 void ClearVideoMemRegion(PT_VideoMem ptVideoMem, PT_Layout ptLayout, unsigned int dwColor)
 {
 	unsigned char *pucVM;
@@ -541,16 +411,7 @@ void ClearVideoMemRegion(PT_VideoMem ptVideoMem, PT_Layout ptLayout, unsigned in
 
 }
 
-/**********************************************************************
- * 函数名称： DisplayInit
- * 功能描述： 注册显示设备
- * 输入参数： 无
- * 输出参数： 无
- * 返 回 值： 0 - 成功, 其他值 - 失败
- * 修改日期        版本号     修改人	      修改内容
- * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
- ***********************************************************************/
+
 int DisplayInit(void)
 {
 	int iError;
